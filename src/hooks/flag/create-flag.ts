@@ -1,15 +1,13 @@
 import request from "@/services";
-import { StaffCreateRequest } from "@/types";
+import { ErrorResponse, IFlagCreateRequest } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-interface ErrorResponse {
-  message: string;
-}
 
-const createStaff = async (data: FormData): Promise<StaffCreateRequest> => {
-    const res = await request.post<StaffCreateRequest>("/staff", data, {
+
+const createFlag = async (data: FormData): Promise<IFlagCreateRequest> => {
+    const res = await request.post<IFlagCreateRequest>("/flag", data, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -17,13 +15,13 @@ const createStaff = async (data: FormData): Promise<StaffCreateRequest> => {
     return res.data;
 };
 
-export const useCreateStaff = () => {
+export const usecreateFlag = () => {
     const queryClient = useQueryClient();
-    return useMutation<StaffCreateRequest, AxiosError, FormData>({
-        mutationFn: createStaff,
+    return useMutation<IFlagCreateRequest, AxiosError, FormData>({
+        mutationFn: createFlag,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["staff"] });
-            toast.success("Yangilik muvaffaqiyatli qo'shildi !");
+            queryClient.invalidateQueries({ queryKey: ["club"] });
+            toast.success("Club muvaffaqiyatli qo'shildi !");
         },
         onError: (error: AxiosError) => {
             const errorMessage = (error.response?.data as ErrorResponse)?.message || error.message;

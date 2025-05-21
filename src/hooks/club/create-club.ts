@@ -1,12 +1,10 @@
 import request from "@/services";
-import { ClubCreateRequest } from "@/types";
+import { ClubCreateRequest, ErrorResponse } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-interface ErrorResponse {
-    message: string;
-}
+
 
 const createClub = async (data: FormData): Promise<ClubCreateRequest> => {
     const res = await request.post<ClubCreateRequest>("/club", data, {

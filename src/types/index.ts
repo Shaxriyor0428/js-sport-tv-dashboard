@@ -222,3 +222,22 @@ export interface IScoreOneDetailModal {
     location: string;
 }
 
+export interface IFlagCreateRequest {
+    id?: number;
+    name: string;
+    image: File;
+}
+
+export interface IFlagData {
+    id: number;
+    name: string;
+    image: string
+}
+
+export interface IFlagResponse {
+    data: IFlagData[]
+}
+
+export interface ErrorResponse {
+    message: string;
+}
