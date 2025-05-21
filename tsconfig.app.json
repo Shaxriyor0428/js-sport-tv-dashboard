@@ -28,6 +28,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["./editorjs.d.ts","src"]
+  "include": ["src"]
 
 }

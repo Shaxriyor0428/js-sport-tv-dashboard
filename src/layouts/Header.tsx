@@ -2,11 +2,11 @@ import { Plus, User } from "lucide-react";
 import { BellIcon } from "../assets/icons";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import StepModal from "@/components/modal/step-modal/StepModal";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(!isOpen);
+  
   return (
     <>
       <header className="h-16 fixed top-0 left-64 right-0 w-[calc(w-full - 16rem)] bg-white flex items-center justify-between px-5 z-40">
@@ -31,7 +31,6 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <StepModal handleOpen={handleOpen} isOpen={isOpen} />
     </>
   );
 };
