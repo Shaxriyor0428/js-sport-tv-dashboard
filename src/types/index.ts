@@ -241,3 +241,27 @@ export interface IFlagResponse {
 export interface ErrorResponse {
     message: string;
 }
+
+export interface IGameCreateRequest {
+    id?: string;
+    homeTeamName: string;
+    guestTeamName: string;
+    homeTeamFlag: string;
+    guestTeamFlag: string;
+    startTime: Date;
+    coverImage: File
+}
+
+export interface IGameData {
+    id: string;
+    homeTeamName: string;
+    guestTeamName: string;
+    homeTeamFlag: string;
+    guestTeamFlag: string;
+    startTime: Date;
+    coverImage: string
+}
+
+export interface IGameResponse {
+    data: IGameData[]
+}

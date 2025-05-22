@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { IMG_DOMAIN } from "@/constants";
+import { DOMAIN } from "@/constants";
 import { cn } from "@/lib/utils";
 
 interface IHandleImageProps {
@@ -31,7 +31,7 @@ export const HandleImage = memo(({ isOpen, setIsOpen, image }: IHandleImageProps
 
         <div className=" flex justify-center items-center max-h-[70vh]">
           <img
-            src={`${IMG_DOMAIN}/${image}`}
+            src={`${DOMAIN}/${image}`}
             alt="gallery preview"
             className="rounded-xl max-h-[70vh] object-contain shadow-md"
           />
