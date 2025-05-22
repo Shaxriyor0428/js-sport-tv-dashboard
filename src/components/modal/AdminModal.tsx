@@ -10,49 +10,61 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCreateAdmin } from "@/hooks/admin/create-admin";
-import { AdminCreateRequest } from "@/types";
+import { IAdminData } from "@/types";
 import { useUpdateAdmin } from "@/hooks/admin/update-admin";
 
 interface ModalProp {
   isOpen: boolean;
   handleOpen: () => void;
-  element?: AdminCreateRequest;
+  element?: IAdminData;
 }
 
-const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
-  const formSchema = z.object({
-    name: z.string().min(1, "Username majburiy"),
-    fullname: z.string().optional(),
-    password: element && element.id !== undefined
-      ? z.string().optional()
-      : z.string().min(3, "Parol kamida 3 belgidan iborat bo'lishi kerak"),
-    role: z.string().min(1, "Rol tanlang"),
-  });
+const createSchema = z.object({
+  fullName: z.string().min(1, "To'liq ism majburiy"),
+  username: z.string().min(1, "Login majburiy"),
+  password: z.string().min(3, "Parol kamida 3 belgidan iborat bo'lishi kerak"),
+  role: z.string().min(1, "Rol tanlang"),
+  status: z.enum(["active", "inactive"], { required_error: "Holatni tanlang" }),
+});
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const updateSchema = z.object({
+  fullName: z.string().min(1, "To'liq ism majburiy"),
+  username: z.string().min(1, "Login majburiy"),
+  password: z.string().optional(),
+  role: z.string().min(1, "Rol tanlang"),
+  status: z.enum(["active", "inactive"], { required_error: "Holatni tanlang" }),
+});
+
+type FormValues = z.infer<typeof createSchema> | z.infer<typeof updateSchema>;
+
+const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
+  const form = useForm<FormValues>({
+    resolver: zodResolver(element?.id ? updateSchema : createSchema),
     defaultValues: {
-      name: "",
-      fullname: "",
+      fullName: "",
+      username: "",
       password: "",
-      role: "",
+      role: "admin",
+      status: "active",
     },
     mode: "onChange",
   });
+  
 
   const { control, handleSubmit, reset, formState } = form;
   const { isValid, isDirty } = formState;
+  const canSubmit = isValid && isDirty;
 
   const { mutate: createAdmin } = useCreateAdmin();
   const { mutate: updateAdmin } = useUpdateAdmin();
-  
 
   const onClose = () => {
     reset({
-      name: "",
-      fullname: "",
+      fullName: "",
+      username: "",
       password: "",
-      role: "",
+      role: "admin",
+      status: "active",
     });
     handleOpen();
   };
@@ -61,29 +73,61 @@ const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
     if (isOpen) {
       if (element && element.id !== undefined) {
         reset({
-          name: element.name,
-          fullname: element.fullname ?? "",
+          fullName: element.fullName ?? "",
+          username: element.username,
           password: "",
           role: element.role,
+          status: element.status as "active" | "inactive", 
         });
       } else {
-        reset();
+        reset({
+          fullName: "",
+          username: "",
+          password: "",
+          role: "admin",
+          status: "active",
+        });
       }
     }
-  }, [isOpen, reset, element]);
+  }, [isOpen, element, reset]);
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const submitData = {
-      ...data,
-      password: data.password || "",
-    };
-    
+  const onSubmit = (data: FormValues) => {
     if (element && element.id !== undefined) {
-      updateAdmin({ id: element.id, data: submitData });
+      const updateData = {
+        fullName: data.fullName,
+        username: data.username,
+        role: data.role,
+        status: data.status,
+        ...(data.password ? { password: data.password } : {}),
+      };
+      updateAdmin(
+        { id: element.id, data: updateData },
+        {
+          onSuccess: () => {
+            onClose();
+          },
+          onError: (error) => {
+            console.error("Update error:", error);
+          },
+        }
+      );
     } else {
-      createAdmin(submitData);
+      const createData = {
+        fullName: data.fullName,
+        username: data.username,
+        password: data.password as string,
+        role: data.role,
+        status: data.status,
+      };
+      createAdmin(createData, {
+        onSuccess: () => {
+          onClose();
+        },
+        onError: (error) => {
+          console.error("Create error:", error);
+        },
+      });
     }
-    onClose();
   };
 
   return (
@@ -91,20 +135,20 @@ const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
       <DialogContent className="max-w-[500px] rounded-lg pt-5 pb-10 bg-white max-h-[70vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold">
-            {element?.id !== undefined ? "Adminni o‘zgartirish" : "Yangi Admin yaratish"}
+            {element?.id !== undefined ? "Adminni o'zgartirish" : "Yangi Admin yaratish"}
           </DialogTitle>
         </DialogHeader>
-        <DialogDescription className="hidden"></DialogDescription>
+        <DialogDescription className="hidden" />
         <button onClick={onClose}>
           <X className="w-6 h-6 absolute top-4 right-4" />
         </button>
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            {/* Name */}
+            {/* Username */}
             <FormField
               control={control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <Label>Login (username)</Label>
@@ -116,13 +160,13 @@ const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
               )}
             />
 
-            {/* Fullname */}
+            {/* fullName */}
             <FormField
               control={control}
-              name="fullname"
+              name="fullName"
               render={({ field }) => (
                 <FormItem>
-                  <Label>To‘liq ism (ixtiyoriy)</Label>
+                  <Label>To'liq ism </Label>
                   <FormControl>
                     <Input {...field} placeholder="Masalan: Shaxriyor Karimov" />
                   </FormControl>
@@ -137,7 +181,9 @@ const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <Label>Parol {element?.id !== undefined && <span className="text-gray-500">(ixtiyoriy)</span>}</Label>
+                  <Label>
+                    Parol {element?.id !== undefined && <span className="text-gray-500"></span>}
+                  </Label>
                   <FormControl>
                     <Input {...field} type="password" placeholder="Yangi parol" />
                   </FormControl>
@@ -147,44 +193,62 @@ const AdminModal = ({ handleOpen, isOpen, element }: ModalProp) => {
             />
 
             {/* Role */}
-                  <FormField
-                    control={control}
-                    name="role"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormControl>
-                            <div className="relative w-full">
-                            <Label className="text-textColor inline-block pb-2">
-                                Rol
-                            </Label>
-                            <Select
-                                value={field.value || ""}
-                                onValueChange={(value) => field.onChange(value)}
-                            >
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Rolni tanlang" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent className="z-[103]">
-                                <SelectItem value="admin">Admin</SelectItem>
-                                <SelectItem value="superadmin">Superadmin</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            </div>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
+            <FormField
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative w-full">
+                      <Label className="text-textColor inline-block pb-2">Rol</Label>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Rolni tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[103]">
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="superadmin">Superadmin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Status */}
+            <FormField
+              control={control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative w-full">
+                      <Label className="text-textColor inline-block pb-2">Holat</Label>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Holatni tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[103]">
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             {/* Submit */}
             <Button
               type="submit"
               className="w-full py-3 mt-4 bg-[#393F5F] text-white hover:opacity-90 rounded-[10px] text-md font-semibold"
-              disabled={!isValid || !isDirty}
+              disabled={!canSubmit}
             >
-              {element?.id !== undefined ? "O‘zgartirish" : "Yaratish"}
+              {element?.id !== undefined ? "O'zgartirish" : "Yaratish"}
             </Button>
           </form>
         </Form>

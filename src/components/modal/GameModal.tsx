@@ -174,11 +174,11 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     setPreviewImage(null);
   };
 
- const handleFlagSelect = ( value: string, nameField: "homeTeamName" | "guestTeamName", flagField: "homeTeamFlag" | "guestTeamFlag") => {
-  const [name, flag] = value.split(":");
-  setValue(nameField, name, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
-  setValue(flagField, flag, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
-};
+  const handleFlagSelect = ( value: string, nameField: "homeTeamName" | "guestTeamName", flagField: "homeTeamFlag" | "guestTeamFlag") => {
+    const [name, flag] = value.split(":");
+    setValue(nameField, name, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
+    setValue(flagField, flag, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
+  };
 
 
   return (

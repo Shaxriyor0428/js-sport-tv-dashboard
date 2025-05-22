@@ -9,8 +9,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import AdminModal from "@/components/modal/AdminModal";
 import { useGetAdmins } from "@/hooks/admin/get-admin";
-import { dateOptions } from "@/lib/data-options";
-import { AdminCreateRequest } from "@/types";
+import { IAdminData } from "@/types";
 import { useDeleteAdmin } from "@/hooks/admin/delete-admin";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { useConfirmModal } from "@/components/modal/useConfirmMOdal";
@@ -24,7 +23,7 @@ const Admin = () => {
   const form = useForm<FormData>();
   const formValues = useWatch({ control: form.control });
   const [isOpen, setIsOpen] = useState(false);
-  const [element, setElement] = useState<AdminCreateRequest | undefined>(undefined);
+  const [element, setElement] = useState<IAdminData | undefined>(undefined);
   const { mutate: deleteAdmin } = useDeleteAdmin();
 
   const { isOpen: isConfirmOpen, message, openModal, closeModal, onConfirm } = useConfirmModal();
@@ -34,7 +33,7 @@ const Admin = () => {
     });
   };
 
-  const handleOpen = (element?: AdminCreateRequest) => {
+  const handleOpen = (element?: IAdminData) => {
     setElement(element);
     setIsOpen(!isOpen);
   };
@@ -100,7 +99,7 @@ const Admin = () => {
          onClick={() => setIsOpen(true)}
         >
             <Plus className="" />
-            Create admin
+            Admin yaratish
           </Button>
       </div>
 
@@ -111,7 +110,7 @@ const Admin = () => {
         <TableHead className="px-2 text-black py-5">Ism Familya</TableHead>
         <TableHead className="px-2 text-black py-5">Username</TableHead>
         <TableHead className="px-2 text-black py-5">Roli</TableHead>
-        <TableHead className="px-2 text-black py-5">Registratsiya</TableHead>
+        <TableHead className="px-2 text-black py-5">Holati</TableHead>
         <TableHead className="pr-6 text-right text-black py-5">Harakat</TableHead>
     </TableRow>
     </TableHeader>
@@ -123,10 +122,10 @@ const Admin = () => {
             className="bg-white hover:bg-[#F5F6FA] border-b border-[#E4E6EE]"
         >
             <TableCell className="pl-6">{inx + 1}</TableCell>
-            <TableCell>{item.fullname}</TableCell>
-            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.fullName}</TableCell>
+            <TableCell>{item.username}</TableCell>
             <TableCell>{item.role}</TableCell>
-            <TableCell>{new Date(item.created_at).toLocaleDateString("uz-UZ",dateOptions)}</TableCell>
+            <TableCell>{item.status}</TableCell>
             <TableCell className="text-right pr-6">
               <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -137,7 +136,7 @@ const Admin = () => {
                     <DropdownMenuContent align="end" className="bg-white">
                       <DropdownMenuItem>
                         <button
-                        onClick={() => handleOpen(item)}
+                        onClick={() => handleOpen(item as IAdminData)}
                           className="w-full flex gap-2 items-center"
                         >
                           <Edit className="mr-2 w-4 h-4 text-blue-600" />

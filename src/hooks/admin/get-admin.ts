@@ -8,7 +8,7 @@ interface IAdminResponse {
 }
 
 const getAdmins = async (): Promise<IAdminResponse> => {
-    const res = await request.get<IAdminResponse>("/admin");
+    const res = await request.get<IAdminResponse>("/auth/all");
     return res.data;
 };
 

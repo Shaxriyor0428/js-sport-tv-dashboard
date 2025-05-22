@@ -1,18 +1,17 @@
 import request from "@/services";
-import { AdminCreateRequest } from "@/types";
-import { AdminProps } from "@/types";
+import { AdminCreateRequest, IAdminData } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-const createAdmin = async (data: AdminProps): Promise<AdminCreateRequest> => {
-    const res = await request.post<AdminCreateRequest>("/admin/add", data);
+const createAdmin = async (data: IAdminData): Promise<AdminCreateRequest> => {
+    const res = await request.post<AdminCreateRequest>("/auth/create", data);
     return res.data;
 };
 
 export const useCreateAdmin = () => {
     const queryClient = useQueryClient();
-    return useMutation<AdminCreateRequest, AxiosError, AdminProps>({
+    return useMutation<AdminCreateRequest, AxiosError, IAdminData>({
         mutationFn: createAdmin,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["admin"] });

@@ -14,13 +14,12 @@ const request = axios.create({
 
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        // const token = localStorage.getItem("access_token");
+        const token = localStorage.getItem("access_token");
         // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhmYWU2MmI2LWE5OTctNDkzZS04NTVmLWM5N2Q3MDE1MmM4ZCIsInJvbGUiOiJzdXBlcmFkbWluIiwibmFtZSI6InNoYXhyaXlvciIsImlhdCI6MTc0NTEyNTM0NCwiZXhwIjoxNzQ1NzMwMTQ0fQ.p6ICK1Od0KJNw8h2IxMn4D8qy68d_sqQETtvOjSgk-o";
 
-        // if (token && config.headers) {
-        //     config.headers.Authorization = `Bearer ${token}`;
-        // }
-
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
 
         return config;
     },
@@ -36,7 +35,7 @@ request.interceptors.response.use(
         if (errorMessage === "Admin not found") {
             const { logOut } = useStore.getState();
             logOut();
-            window.location.href = "/forbidden";
+            window.location.href = "/signin";
         }
 
         return Promise.reject(error);
