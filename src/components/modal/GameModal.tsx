@@ -199,7 +199,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
             <FormField
               control={control}
               name="homeTeamName"
-              render={({ field }) => (
+              render={({ }) => (
                 <FormItem>
                   <FormLabel>Uy jamoasi nomi</FormLabel>
                   <FormControl>
@@ -227,7 +227,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
             <FormField
               control={control}
               name="guestTeamName"
-              render={({ field }) => (
+              render={({ }) => (
                 <FormItem>
                   <FormLabel>Mehmon jamoa nomi</FormLabel>
                   <FormControl>
