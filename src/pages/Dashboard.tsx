@@ -2,6 +2,7 @@ import { usegetProfile } from "@/hooks/admin/get-profile";
 import { Copy, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { encrypt } from "@/lib/crypto-js";
 
 const Dashboard = () => {
   const { data } = usegetProfile();
@@ -10,29 +11,14 @@ const Dashboard = () => {
   const handleCopy = () => {
     if (data?.message && data?.data?.id) {
       const { id } = data.data;
-      // const hashedId = btoa(id.toString()).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-
-      const hashedId = btoa(id.toString())
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-    
-    console.log("Hashed (URL-safe):", hashedId);
-    
-    // Decode qilish
-    let encodedId = hashedId.replace(/-/g, "+").replace(/_/g, "/");
-    // Base64 padding (=`=`) ni tiklash:
-    while (encodedId.length % 4 !== 0) {
-      encodedId += "=";
-    }
-    const originalId = atob(encodedId);
-    
-    console.log("Decoded ID:", originalId);
-
-      const newUrl = new URL('https://jsporttv.com');
+  
+      const encryptedId = encrypt(id.toString());
+  
+      const newUrl = new URL("http://localhost:3000");
+      // const newUrl = new URL("https://jsporttv.com");
       newUrl.searchParams.append("page", "subscribe");
-      newUrl.searchParams.append("r", hashedId);
-
+      newUrl.searchParams.append("r", encryptedId);
+  
       navigator.clipboard
         .writeText(newUrl.toString())
         .then(() => {
@@ -56,8 +42,10 @@ const Dashboard = () => {
       });
     }
   };
+  
 
-  const inviteUrl =  data?.data?.id ? `${new URL('https://jsporttv.com').origin}?page=subscribe&r=${btoa(data.data.id.toString()).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "")}` : "";
+  const inviteUrl = data?.data?.id ? `${new URL("http://localhost:3000").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
+  // const inviteUrl = data?.data?.id ? `${new URL("https://jsporttv.com").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
