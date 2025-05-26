@@ -32,7 +32,7 @@ request.interceptors.response.use(
         const errorMessage = (error.response?.data as ErrorResponse)?.message;
         console.log(errorMessage);
 
-        if (errorMessage === "Admin not found") {
+        if (errorMessage === "Admin not found" || error.status === 401 || errorMessage === "Invalid or expired token" || error.response?.status === 401) {
             const { logOut } = useStore.getState();
             logOut();
             window.location.href = "/signin";
