@@ -1,30 +1,20 @@
+import { AxiosError } from "axios";
+import { IAdminData } from "@/types";
 import request from "@/services";
-import useStore from "@/context/store";
+import { useQuery } from "@tanstack/react-query";
+interface IAdminResponse {
+    data: IAdminData;
+    message: string
+}
 
-const getProfile = async (token: string) => {
-    const { setAuth } = useStore.getState();
-
-    try {
-        const res = await request.get("/admin/profile", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        console.log(res.data);
-        
-
-        const { name, id, role } = res.data;
-
-        if (name && id) {
-            setAuth(true, role, name);
-        } else {
-            throw new Error("Invalid token");
-        }
-    } catch (err) {
-        localStorage.removeItem("access_token");
-        throw err;
-    }
+const getProfile = async (): Promise<IAdminResponse> => {
+    const res = await request.get<IAdminResponse>("/auth/profile");
+    return res.data;
 };
 
-export default getProfile;
+export const usegetProfile = () => {
+    return useQuery<IAdminResponse, AxiosError>({
+        queryKey: [],
+        queryFn: getProfile,
+    });
+};

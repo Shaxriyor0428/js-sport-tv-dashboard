@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 const deleteAdmin = async (id: string): Promise<void> => {
-    await request.delete(`/admin/${id}`);
+    await request.delete(`/auth/delete/${id}`);
 };
 
 export const useDeleteAdmin = () => {

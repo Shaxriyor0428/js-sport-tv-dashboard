@@ -32,7 +32,7 @@ export const useLogin = () => {
     },
     onError: (error) => {
         const errorMessage = (error.response?.data as { message?: string })?.message || error.message;
-        toast.error(`Error: ${errorMessage}`);
+        toast.error(`${errorMessage}`);
     },
   });
 };
