@@ -13,6 +13,7 @@ import { usecreateGame } from "@/hooks/games/create-game";
 import { useupdateGame } from "@/hooks/games/update-game";
 import { useGetFlags } from "@/hooks/flag/get-all-flag";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
 
 interface ModalProp {
   isOpen: boolean;
@@ -107,6 +108,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     formData.append("guestTeamName", data.guestTeamName);
     formData.append("homeTeamFlag", data.homeTeamFlag);
     formData.append("guestTeamFlag", data.guestTeamFlag);
+
     formData.append("startTime", data.startTime.toISOString());
 
     if (data.coverImage instanceof File) {
@@ -253,7 +255,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
               )}
             />
 
-            <FormField
+          <FormField
               control={control}
               name="startTime"
               render={({ field }) => (
@@ -262,9 +264,11 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
                   <FormControl>
                     <Input
                       type="datetime-local"
-                      {...field}
-                      value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                      onChange={(e) => setValue("startTime", new Date(e.target.value), { shouldValidate: true, shouldDirty: true })}
+                      value={field.value ? format(field.value, "yyyy-MM-dd'T'HH:mm") : ""}
+                        onChange={(e) => {
+                        const date = new Date(e.target.value);
+                        setValue("startTime", date, { shouldValidate: true, shouldDirty: true });
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

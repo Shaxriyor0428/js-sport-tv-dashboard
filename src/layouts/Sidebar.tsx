@@ -1,11 +1,25 @@
 import { NavLink, NavLinkRenderProps, useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/logo.png";
 import { router } from "@/data/router";
+import useStore from "@/context/store";
+import Dashboard from "@/pages/Dashboard";
+import Users from "@/pages/Users";
+import { DashboardIcon, UsersIcon } from "@/assets/icons";
 
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+  const { role } = useStore();
+
+  // Route'larni role ga qarab filter qilamiz
+  const filteredRoutes =
+    role === "admin"
+      ? [
+          { label: "Bosh sahifa", icon: DashboardIcon, href: "/", component: Dashboard },
+          { label: "Foydalanuvchilar", icon: UsersIcon, href: "/users", component: Users },
+        ]
+      : router.filter((item) => item.href !== "/users");
+
   return (
     <aside className="w-72 bg-white flex flex-col h-full fixed left-0 top-0 z-[10]">
       <div className="h-16 px-8 bg-white flex items-center justify-between">
@@ -20,7 +34,7 @@ const Sidebar = () => {
       <nav className="flex-1">
         <ul className="flex flex-col gap-4 justify-between h-full px-4">
           <div className="flex flex-col gap-1">
-            {router.map((item) => (
+            {filteredRoutes.map((item) => (
               <NavLink
                 key={item.href}
                 to={item.href}

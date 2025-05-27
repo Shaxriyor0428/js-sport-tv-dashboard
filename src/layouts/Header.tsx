@@ -2,11 +2,17 @@ import { Plus, User } from "lucide-react";
 import { BellIcon } from "../assets/icons";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import useStore from "../context/store";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(!isOpen);
   
+  const handleClick = () => {
+    const { logOut } = useStore.getState();
+      logOut();
+      window.location.href = "/signin";
+  }
   return (
     <>
       <header className="h-16 fixed top-0 left-64 right-0 w-[calc(w-full - 16rem)] bg-white flex items-center justify-between px-5 z-40">
@@ -26,7 +32,7 @@ const Header = () => {
           <button className="w-[40px] h-[40px] flex justify-center items-center bg-bg_color text-textColor rounded-full">
             <BellIcon />
           </button>
-          <button className="w-[40px] h-[40px] flex justify-center items-center bg-bg_color text-textColor rounded-full">
+          <button onClick={handleClick} className="w-[40px] h-[40px] flex justify-center items-center bg-bg_color text-textColor rounded-full">
             <User />
           </button>
         </div>
