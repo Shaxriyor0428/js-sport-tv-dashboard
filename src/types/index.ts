@@ -69,3 +69,11 @@ export interface UserLogin {
     username: string;
     password: string;
   }
+
+  export interface IUserData {
+    id: string;
+    name: string;
+    email: string;
+    accountNumber: string;
+    paymentExpire: Date;
+}

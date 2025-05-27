@@ -14,8 +14,8 @@ const Dashboard = () => {
   
       const encryptedId = encrypt(id.toString());
   
-      const newUrl = new URL("http://localhost:3000");
-      // const newUrl = new URL("https://jsporttv.com");
+      // const newUrl = new URL("http://localhost:3000");
+      const newUrl = new URL("https://jsporttv.com");
       newUrl.searchParams.append("page", "subscribe");
       newUrl.searchParams.append("r", encryptedId);
   
@@ -44,8 +44,8 @@ const Dashboard = () => {
   };
   
 
-  const inviteUrl = data?.data?.id ? `${new URL("http://localhost:3000").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
-  // const inviteUrl = data?.data?.id ? `${new URL("https://jsporttv.com").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
+  // const inviteUrl = data?.data?.id ? `${new URL("http://localhost:3000").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
+  const inviteUrl = data?.data?.id ? `${new URL("https://jsporttv.com").origin}?page=subscribe&r=${encrypt(data.data.id.toString())}` : "";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8">

@@ -12,3 +12,7 @@ export const scheduleOptions: Intl.DateTimeFormatOptions = {
     month: '2-digit',
     year: 'numeric',
 };
+
+export const formatedDate = (date: Date) => {
+    return date.toLocaleString('en-US', dateOptions)
+}
