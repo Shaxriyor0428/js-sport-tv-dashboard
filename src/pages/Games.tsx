@@ -149,6 +149,7 @@ const Games = () => {
               <TableHead className="px-2 text-black py-5">Mehmon Jamoa</TableHead>
               <TableHead className="px-2 text-black py-5">Mehmon Jamoasi Bayrog'i</TableHead>
               <TableHead className="px-2 text-black py-5">Boshlanish Vaqti</TableHead>
+              <TableHead className="px-2 text-black py-5">Tugash Vaqti</TableHead>
               <TableHead className="pr-6 text-right text-black py-5">Harakat</TableHead>
             </TableRow>
           </TableHeader>
@@ -187,6 +188,7 @@ const Games = () => {
                   />
                 </TableCell>
                 <TableCell>{formatDateTime(item.startTime)}</TableCell>
+                <TableCell>{item.endTime ? formatDateTime(item.endTime) : "-" }</TableCell>
                 <TableCell className="text-right pr-5">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

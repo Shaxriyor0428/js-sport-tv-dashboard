@@ -27,6 +27,7 @@ const formSchema = z.object({
   homeTeamFlag: z.string().min(1, "Uy jamoasi bayrog'i majburiy"),
   guestTeamFlag: z.string().min(1, "Mehmon jamoasi bayrog'i majburiy"),
   startTime: z.date({ required_error: "Boshlanish vaqti majburiy" }),
+  endTime: z.date({ required_error: "Tugash vaqti majburiy" }),
   coverImage: z
     .any()
     .refine((file) => file instanceof File || typeof file === "string", "Rasm tanlanishi kerak"),
@@ -50,6 +51,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
       homeTeamFlag: "",
       guestTeamFlag: "",
       startTime: undefined,
+      endTime: undefined,
       coverImage: undefined,
     },
     mode: "onChange",
@@ -67,6 +69,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
       homeTeamFlag: "",
       guestTeamFlag: "",
       startTime: undefined,
+      endTime: undefined,
       coverImage: undefined,
     });
     setImage(null);
@@ -82,6 +85,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
         homeTeamFlag: element.homeTeamFlag,
         guestTeamFlag: element.guestTeamFlag,
         startTime: new Date(element.startTime),
+        endTime: element?.endTime ? new Date(element.endTime) : undefined,
         coverImage: element.coverImage,
       }, { keepDirty: false });
       
@@ -94,7 +98,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
         guestTeamName: "",
         homeTeamFlag: "",
         guestTeamFlag: "",
-        startTime: undefined,
+        startTime: undefined,      
+        endTime: undefined,
         coverImage: undefined,
       });
       setPreviewImage(null);
@@ -110,6 +115,7 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     formData.append("guestTeamFlag", data.guestTeamFlag);
 
     formData.append("startTime", data.startTime.toISOString());
+    formData.append("endTime", data.endTime.toISOString());
 
     if (data.coverImage instanceof File) {
       formData.append("coverImage", data.coverImage);
@@ -268,6 +274,27 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
                         onChange={(e) => {
                         const date = new Date(e.target.value);
                         setValue("startTime", date, { shouldValidate: true, shouldDirty: true });
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+          <FormField
+              control={control}
+              name="endTime"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tugash vaqti</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="datetime-local"
+                      value={field.value ? format(field.value, "yyyy-MM-dd'T'HH:mm") : ""}
+                        onChange={(e) => {
+                        const date = new Date(e.target.value);
+                        setValue("endTime", date, { shouldValidate: true, shouldDirty: true });
                       }}
                     />
                   </FormControl>

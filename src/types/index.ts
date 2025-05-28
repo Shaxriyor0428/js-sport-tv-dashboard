@@ -48,6 +48,7 @@ export interface IGameCreateRequest {
     homeTeamFlag: string;
     guestTeamFlag: string;
     startTime: Date;
+    endTime: Date;
     coverImage: File
 }
 
@@ -58,6 +59,7 @@ export interface IGameData {
     homeTeamFlag: string;
     guestTeamFlag: string;
     startTime: Date;
+    endTime: Date;
     coverImage: string
 }
 
