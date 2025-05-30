@@ -27,7 +27,7 @@ const Admin = () => {
   const { mutate: deleteAdmin } = useDeleteAdmin();
 
   const { isOpen: isConfirmOpen, message, openModal, closeModal, onConfirm } = useConfirmModal();
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
      openModal("Ishonchingiz komilmi siz rostdan ham ushbu adminni o'chirishga rozimisiz ?", () => {
       deleteAdmin({ id: id.toString() });
     });
@@ -144,7 +144,7 @@ const Admin = () => {
                         </button>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <button className="w-full flex gap-2 items-center" onClick={() => handleDeleteClick(item.id ?? 0)}>
+                        <button className="w-full flex gap-2 items-center" onClick={() => handleDeleteClick(item.id ?? "")}>
                           <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
                           <span className={`min-w-[47px]`}>Delete</span>
                         </button>
