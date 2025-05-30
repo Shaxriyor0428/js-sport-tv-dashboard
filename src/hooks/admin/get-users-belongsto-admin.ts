@@ -14,7 +14,7 @@ const getUsersBelongsToAdmin = async (): Promise<IUserData[]> => {
 
 export const usegetUsersBelongsToAdmin = () => {
     return useQuery<IUserData[], AxiosError>({
-        queryKey: ["admin"],
+        queryKey: [""],
         queryFn: getUsersBelongsToAdmin,
     });
 };

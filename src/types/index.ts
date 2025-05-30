@@ -4,7 +4,7 @@ export interface IconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 export interface AdminCreateRequest {
-    id?: number;
+    id?: string;
     fullName?: string;
     username: string;
     password?: string;
