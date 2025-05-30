@@ -2,7 +2,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ListFilter, Plus, Trash2Icon, Edit, MoreHorizontal  } from "lucide-react";
+import { ListFilter, Plus, Trash2Icon, Edit, MoreHorizontal, Link2  } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,8 @@ import { IAdminData } from "@/types";
 import { useDeleteAdmin } from "@/hooks/admin/delete-admin";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import { useConfirmModal } from "@/components/modal/useConfirmMOdal";
+import { toast } from "react-toastify";
+import { encrypt } from "@/lib/crypto-js";
 
 interface FormData {                
   name?: string;
@@ -49,6 +51,37 @@ const Admin = () => {
     console.log("Form ma'lumotlari:", data);
   };
   const admins = useGetAdmins().data?.data ?? [];
+
+
+  const handleCopy = (id: string) => {
+    if (id) {
+      const newUrl = new URL("https://jsporttv.com");
+      newUrl.searchParams.append("page", "subscribe");
+      const encryptedId = encrypt(id)
+      newUrl.searchParams.append("r", encryptedId);
+
+      navigator.clipboard
+        .writeText(newUrl.toString())
+        .then(() => {
+          toast.success(`URL nusxalandi: ${newUrl.toString().toLowerCase()}`, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        })
+        .catch((err) => {
+          toast.error("Nusxalashda xatolik yuz berdi: " + err.message, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        });
+    } else {
+      toast.error("Ma'lumotlar mavjud emas", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
 
   return (
     <div>
@@ -111,6 +144,7 @@ const Admin = () => {
         <TableHead className="px-2 text-black py-5">Username</TableHead>
         <TableHead className="px-2 text-black py-5">Roli</TableHead>
         <TableHead className="px-2 text-black py-5">Holati</TableHead>
+        <TableHead className="px-2 text-black py-5">Taklif Linki</TableHead>
         <TableHead className="pr-6 text-right text-black py-5">Harakat</TableHead>
     </TableRow>
     </TableHeader>
@@ -126,6 +160,11 @@ const Admin = () => {
             <TableCell>{item.username}</TableCell>
             <TableCell>{item.role}</TableCell>
             <TableCell>{item.status}</TableCell>
+            <TableCell>
+              <button onClick={() => handleCopy(item?.id || "")}>
+              <Link2 />
+              </button>
+            </TableCell>
             <TableCell className="text-right pr-6">
               <DropdownMenu>
                     <DropdownMenuTrigger asChild>
