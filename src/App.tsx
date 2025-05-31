@@ -5,6 +5,7 @@ import useStore from "./context/store";
 import SignIn from "./pages/sign-in/SignIn";
 import Users from "./pages/Users";
 import Dashboard from "./pages/Dashboard";
+import Payment from "./pages/Payment";
 
 function App() {
   const { auth, role } = useStore();
@@ -14,6 +15,7 @@ function App() {
       ? [
           { href: "/", component: Dashboard },
           { href: "/users", component: Users },
+          { href: "/payment", component: Payment },
         ]
       : router.filter((item) => item.href !== "/users");
 

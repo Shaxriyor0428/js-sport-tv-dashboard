@@ -5,6 +5,8 @@ import useStore from "@/context/store";
 import Dashboard from "@/pages/Dashboard";
 import Users from "@/pages/Users";
 import { DashboardIcon, UsersIcon } from "@/assets/icons";
+import Payment from "../pages/Payment";
+import { PaymentIcon } from "../assets/icons/PaymentIcon copy";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -17,6 +19,7 @@ const Sidebar = () => {
       ? [
           { label: "Bosh sahifa", icon: DashboardIcon, href: "/", component: Dashboard },
           { label: "Foydalanuvchilar", icon: UsersIcon, href: "/users", component: Users },
+          { label: "To'lovlar", icon: PaymentIcon, href: "/payment", component: Payment },
         ]
       : router.filter((item) => item.href !== "/users");
 
