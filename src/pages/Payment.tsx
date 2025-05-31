@@ -57,6 +57,21 @@ const Payment = () => {
 
   const filteredUsers = userData.data;
 
+    const getStatusStyles = (status: string) => {
+    switch (status) {
+      case "pending":
+        return { className: "bg-yellow-100 text-yellow-800", label: "Kutilmoqda" };
+      case "succeeded":
+        return { className: "bg-green-100 text-green-800", label: "Muvaffaqiyatli" };
+      case "failed":
+        return { className: "bg-red-100 text-red-800", label: "Muvaffaqiyatsiz" };
+      case "cancelled":
+        return { className: "bg-gray-100 text-gray-800", label: "Bekor qilingan" };
+      default:
+        return { className: "bg-gray-100 text-gray-800", label: status };
+    }
+  };
+
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">To'lovlar</h1>
@@ -164,15 +179,11 @@ const Payment = () => {
                                   <TableCell>{payment.currency}</TableCell>
                                   <TableCell>{payment.cardType}</TableCell>
                                   <TableCell>{formatedDate(new Date(payment.paidAt))}</TableCell>
-                                  <TableCell>
+                                   <TableCell>
                                     <span
-                                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                        payment.status === "succeeded"
-                                          ? "bg-green-100 text-green-800"
-                                          : "bg-red-100 text-red-800"
-                                      }`}
+                                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(payment.status).className}`}
                                     >
-                                      {payment.status === "succeeded" ? "Muvaffaqiyatli" : "Muvaffaqiyatsiz"}
+                                      {getStatusStyles(payment.status).label}
                                     </span>
                                   </TableCell>
                                 </TableRow>
