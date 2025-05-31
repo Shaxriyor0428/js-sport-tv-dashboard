@@ -72,10 +72,23 @@ export interface UserLogin {
     password: string;
   }
 
-  export interface IUserData {
+export interface IUserData {
     id: string;
     name: string;
     email: string;
     accountNumber: string;
     paymentExpire: Date;
+    payments: {
+        amount: number;
+        currency: string;
+        status: string;
+        maskedPan: string;
+        cardType: string;
+        cardCountry: string;
+        paidAt: Date;
+        paymentStatus: boolean;
+        starTime: Date;
+        endTime: Date;
+        paymentType: string;
+    }[];
 }
