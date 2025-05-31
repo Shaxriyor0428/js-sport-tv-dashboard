@@ -17,7 +17,7 @@ const Payment = () => {
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const form = useForm<FormData>({
     defaultValues: {
-      status: "pending",
+      status: "",
     },
   });
   const formValues = useWatch({ control: form.control });
