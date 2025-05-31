@@ -167,7 +167,7 @@ const Payment = () => {
                                   <TableCell>
                                     <span
                                       className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                        payment.paymentStatus
+                                        payment.status === "succeeded"
                                           ? "bg-green-100 text-green-800"
                                           : "bg-red-100 text-red-800"
                                       }`}
