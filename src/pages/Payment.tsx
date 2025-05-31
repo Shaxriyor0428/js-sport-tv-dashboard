@@ -172,7 +172,7 @@ const Payment = () => {
                                           : "bg-red-100 text-red-800"
                                       }`}
                                     >
-                                      {payment.paymentStatus ? "Muvaffaqiyatli" : "Muvaffaqiyatsiz"}
+                                      {payment.status === "succeeded" ? "Muvaffaqiyatli" : "Muvaffaqiyatsiz"}
                                     </span>
                                   </TableCell>
                                 </TableRow>
