@@ -90,39 +90,47 @@ const Payment = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-wrap items-center gap-4"
           >
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="w-[220px]">
-                  <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Statusni tanlang" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[103]">
-                        <SelectItem value="pending">Kutilmoqda</SelectItem>
-                        <SelectItem value="succeeded">Muvaffaqiyatli</SelectItem>
-                        <SelectItem value="failed">Muvaffaqiyatsiz</SelectItem>
-                        <SelectItem value="cancelled">Bekor qilingan</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem> 
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-[220px]">
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="bg-gray-50 border-gray-200">
+                          <SelectValue placeholder="Statusni tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[103]">
+                          <SelectItem value="none">Default holati</SelectItem>
+                          <SelectItem value="pending">Kutilmoqda</SelectItem>
+                          <SelectItem value="succeeded">Muvaffaqiyatli</SelectItem>
+                          <SelectItem value="failed">Muvaffaqiyatsiz</SelectItem>
+                          <SelectItem value="cancelled">Bekor qilingan</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             <FormField
               control={form.control}
               name="paymentType"
               render={({ field }) => (
                 <FormItem className="w-[220px]">
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                        onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
+                        defaultValue={field.value}
+                      >
                       <SelectTrigger>
                         <SelectValue placeholder="To'lov turini tanlang" />
                       </SelectTrigger>
                       <SelectContent className="z-[103]">
+                        <SelectItem value="none">Default holati</SelectItem> 
                         <SelectItem value="oneSubs">Bir martalik</SelectItem> 
                         <SelectItem value="month">Oylik</SelectItem>
                         <SelectItem value="year">Yillik</SelectItem>
