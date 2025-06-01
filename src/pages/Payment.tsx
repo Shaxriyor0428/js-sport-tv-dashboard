@@ -202,7 +202,7 @@ const Payment = () => {
                                   <TableCell>{payment.amount.toLocaleString()}</TableCell>
                                   <TableCell>{payment.currency}</TableCell>
                                   <TableCell>{payment.cardType ? payment.cardType : "-"}</TableCell>
-                                  <TableCell>{payment.transferSum ? payment.transferSum : (payment.amount * 0.992).toFixed(2)}</TableCell>
+                                  <TableCell>{payment.transferSum ? payment.transferSum : "-"}</TableCell>
                                   <TableCell>{formatedDate(new Date(payment.paidAt))}</TableCell>
                                   <TableCell>{payment.paymentType === "oneSubs" ? "Bir martalik" : payment.paymentType === "month" ? "Oylik" : payment.paymentType === "year" ? "Yillik" : "Boshqasi"}</TableCell>
                                    <TableCell>
