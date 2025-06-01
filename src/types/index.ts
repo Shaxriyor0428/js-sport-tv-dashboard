@@ -85,6 +85,7 @@ export interface IUserData {
         maskedPan: string;
         cardType: string;
         cardCountry: string;
+        transferSum: number;
         paidAt: Date;
         paymentStatus: boolean;
         starTime: Date;

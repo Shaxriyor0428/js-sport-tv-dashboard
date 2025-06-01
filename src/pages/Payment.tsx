@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { ListFilter, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatedDate } from "../lib/data-options";
 import emptyImage from "@/assets/images/users-empty.png";
 import { useGetPayments } from "../hooks/admin/get-all-payments";
+import getStatusStyles from "@/lib/get-status";
 
 interface FormData {
   status?: string;
+  paymentType?: string;
 }
 
 const Payment = () => {
@@ -18,16 +19,10 @@ const Payment = () => {
   const form = useForm<FormData>({
     defaultValues: {
       status: "",
+      paymentType: "",
     },
   });
   const formValues = useWatch({ control: form.control });
-
-  const isAtLeastOneFieldFilled = Object.values(formValues).some((value) => {
-    if (typeof value === "string") {
-      return value.trim() !== "";
-    }
-    return false;
-  });
 
   const onSubmit = async (data: FormData) => {
     console.log("Filter ma'lumotlari:", data);
@@ -35,6 +30,7 @@ const Payment = () => {
 
   const { data: userData, isLoading, error } = useGetPayments({
     status: formValues.status,
+    paymentType: formValues.paymentType,
   });
 
   const toggleUserPayments = (userId: string) => {
@@ -57,60 +53,94 @@ const Payment = () => {
 
   const filteredUsers = userData.data;
 
-    const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "pending":
-        return { className: "bg-yellow-100 text-yellow-800", label: "Kutilmoqda" };
-      case "succeeded":
-        return { className: "bg-green-100 text-green-800", label: "Muvaffaqiyatli" };
-      case "failed":
-        return { className: "bg-red-100 text-red-800", label: "Muvaffaqiyatsiz" };
-      case "cancelled":
-        return { className: "bg-gray-100 text-gray-800", label: "Bekor qilingan" };
-      default:
-        return { className: "bg-gray-100 text-gray-800", label: status };
-    }
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">To'lovlar</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center justify-between transform transition-all duration-300 hover:scale-[1.02]">
+            <div>
+              <p className="text-sm text-gray-500">Jami USD</p>
+              <p className="text-2xl font-semibold text-blue-600">
+                {userData.totalUSD?.toLocaleString("en-US") || "0 USD"}
+              </p>
+            </div>
+            <div className="bg-blue-100 p-3 rounded-full">
+              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center justify-between transform transition-all duration-300 hover:scale-[1.02]">
+            <div>
+              <p className="text-sm text-gray-500">Jami UZS</p>
+              <p className="text-2xl font-semibold text-green-600">
+                {userData.totalUZS?.toLocaleString("uz-UZ") || "0 UZS"}
+              </p>
+            </div>
+            <div className="bg-green-100 p-3 rounded-full">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
       <div className="mb-6 flex justify-start">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-wrap items-center gap-4"
           >
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-[220px]">
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="bg-gray-50 border-gray-200">
+                          <SelectValue placeholder="Statusni tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[103]">
+                          <SelectItem value="none">Default holati</SelectItem>
+                          <SelectItem value="pending">Kutilmoqda</SelectItem>
+                          <SelectItem value="succeeded">Muvaffaqiyatli</SelectItem>
+                          <SelectItem value="failed">Muvaffaqiyatsiz</SelectItem>
+                          <SelectItem value="cancelled">Bekor qilingan</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             <FormField
               control={form.control}
-              name="status"
+              name="paymentType"
               render={({ field }) => (
                 <FormItem className="w-[220px]">
                   <FormControl>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                        onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
+                        defaultValue={field.value}
+                      >
                       <SelectTrigger>
-                        <SelectValue placeholder="Statusni tanlang" />
+                        <SelectValue placeholder="To'lov turini tanlang" />
                       </SelectTrigger>
                       <SelectContent className="z-[103]">
-                        <SelectItem value="pending">Kutilmoqda</SelectItem>
-                        <SelectItem value="succeeded">Muvaffaqiyatli</SelectItem>
-                        <SelectItem value="failed">Muvaffaqiyatsiz</SelectItem>
-                        <SelectItem value="cancelled">Bekor qilingan</SelectItem>
+                        <SelectItem value="none">Default holati</SelectItem> 
+                        <SelectItem value="oneSubs">Bir martalik</SelectItem> 
+                        <SelectItem value="month">Oylik</SelectItem>
+                        <SelectItem value="year">Yillik</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
+              )}  
             />
-            <Button
-              type="submit"
-              disabled={!isAtLeastOneFieldFilled}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <ListFilter className="mr-2 h-4 w-4" />
-              Filtrlash
-            </Button>
           </form>
         </Form>
       </div>
@@ -165,8 +195,10 @@ const Payment = () => {
                                 <TableHead className="px-2 text-gray-800 py-3">To'lov miqdori</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Valyuta</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Karta turi</TableHead>
+                                <TableHead className="px-2 text-gray-800 py-3">O'tgan summa</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">To'lov vaqti</TableHead>
-                                <TableHead className="px-2 text-gray-800 py-3">Holat</TableHead>
+                                <TableHead className="px-2 text-gray-800 py-3">Obuna holati</TableHead>
+                                <TableHead className="px-2 text-gray-800 py-3">Holati</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -177,8 +209,10 @@ const Payment = () => {
                                 >
                                   <TableCell>{payment.amount.toLocaleString()}</TableCell>
                                   <TableCell>{payment.currency}</TableCell>
-                                  <TableCell>{payment.cardType}</TableCell>
+                                  <TableCell>{payment.cardType ? payment.cardType : "-"}</TableCell>
+                                  <TableCell>{payment.transferSum ? payment.transferSum : "-"}</TableCell>
                                   <TableCell>{formatedDate(new Date(payment.paidAt))}</TableCell>
+                                  <TableCell>{payment.paymentType === "oneSubs" ? "Bir martalik" : payment.paymentType === "month" ? "Oylik" : payment.paymentType === "year" ? "Yillik" : "Boshqasi"}</TableCell>
                                    <TableCell>
                                     <span
                                       className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusStyles(payment.status).className}`}
