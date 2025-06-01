@@ -61,7 +61,7 @@ const Payment = () => {
             <div>
               <p className="text-sm text-gray-500">Jami USD</p>
               <p className="text-2xl font-semibold text-blue-600">
-                {userData.totalUSD?.toLocaleString("en-US", { style: "currency", currency: "USD" }) || "0.00 USD"}
+                {userData.totalUSD?.toLocaleString("en-US") || "0 USD"}
               </p>
             </div>
             <div className="bg-blue-100 p-3 rounded-full">
@@ -74,7 +74,7 @@ const Payment = () => {
             <div>
               <p className="text-sm text-gray-500">Jami UZS</p>
               <p className="text-2xl font-semibold text-green-600">
-                {userData.totalUZS?.toLocaleString("uz-UZ", { style: "currency", currency: "UZS" }) || "0 UZS"}
+                {userData.totalUZS?.toLocaleString("uz-UZ") || "0 UZS"}
               </p>
             </div>
             <div className="bg-green-100 p-3 rounded-full">
@@ -187,6 +187,7 @@ const Payment = () => {
                                 <TableHead className="px-2 text-gray-800 py-3">To'lov miqdori</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Valyuta</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Karta turi</TableHead>
+                                <TableHead className="px-2 text-gray-800 py-3">O'tgan summa</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">To'lov vaqti</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Obuna holati</TableHead>
                                 <TableHead className="px-2 text-gray-800 py-3">Holati</TableHead>
@@ -200,7 +201,8 @@ const Payment = () => {
                                 >
                                   <TableCell>{payment.amount.toLocaleString()}</TableCell>
                                   <TableCell>{payment.currency}</TableCell>
-                                  <TableCell>{payment.cardType}</TableCell>
+                                  <TableCell>{payment.cardType ? payment.cardType : "-"}</TableCell>
+                                  <TableCell>{payment.transferSum ? payment.transferSum : (payment.amount * 0.992).toFixed(2)}</TableCell>
                                   <TableCell>{formatedDate(new Date(payment.paidAt))}</TableCell>
                                   <TableCell>{payment.paymentType === "oneSubs" ? "Bir martalik" : payment.paymentType === "month" ? "Oylik" : payment.paymentType === "year" ? "Yillik" : "Boshqasi"}</TableCell>
                                    <TableCell>
