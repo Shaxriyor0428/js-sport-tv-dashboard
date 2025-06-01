@@ -6,10 +6,13 @@ import { useQuery } from "@tanstack/react-query";
 interface IUserResponse {
     data: IUserData[];
     message: string;
+    totalUSD: number;
+    totalUZS: number;
 }
 
 interface Query {
     status?: string;
+    paymentType?: string;
 }
 
 const getPayments = async (query?: Query): Promise<IUserResponse> => {
