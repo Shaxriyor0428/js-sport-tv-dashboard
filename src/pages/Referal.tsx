@@ -159,7 +159,6 @@ const ReferalUsers = () => {
               <TableHead className="px-2 text-black py-5">Ism Familya</TableHead>
               <TableHead className="px-2 text-black py-5">Email</TableHead>
               <TableHead className="px-2 text-black py-5">Account raqami</TableHead>
-              <TableHead className="px-2 text-black py-5">To'lov muddati</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -172,7 +171,6 @@ const ReferalUsers = () => {
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item.accountNumber}</TableCell>
-                <TableCell>{formatedDate(new Date(item.paymentExpire))}</TableCell>
               </TableRow>
             ))}
           </TableBody>
