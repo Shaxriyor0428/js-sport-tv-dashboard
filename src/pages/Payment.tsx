@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatedDate } from "../lib/data-options";
 import emptyImage from "@/assets/images/users-empty.png";
 import { useGetPayments } from "../hooks/admin/get-all-payments";
+import getStatusStyles from "@/lib/get-status";
 
 interface FormData {
   status?: string;
@@ -17,8 +18,8 @@ const Payment = () => {
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const form = useForm<FormData>({
     defaultValues: {
-      status: "pending",
-      paymentType: "oneSubs",
+      status: "",
+      paymentType: "",
     },
   });
   const formValues = useWatch({ control: form.control });
@@ -52,25 +53,10 @@ const Payment = () => {
 
   const filteredUsers = userData.data;
 
-    const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "pending":
-        return { className: "bg-yellow-100 text-yellow-800", label: "Kutilmoqda" };
-      case "succeeded":
-        return { className: "bg-green-100 text-green-800", label: "Muvaffaqiyatli" };
-      case "failed":
-        return { className: "bg-red-100 text-red-800", label: "Muvaffaqiyatsiz" };
-      case "cancelled":
-        return { className: "bg-gray-100 text-gray-800", label: "Bekor qilingan" };
-      default:
-        return { className: "bg-gray-100 text-gray-800", label: status };
-    }
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-6">To'lovlar</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
           <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex items-center justify-between transform transition-all duration-300 hover:scale-[1.02]">
             <div>
               <p className="text-sm text-gray-500">Jami USD</p>
