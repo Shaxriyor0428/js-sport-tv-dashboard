@@ -12,6 +12,7 @@ import { formatedDate } from "../lib/data-options";
 import emptyImage from "@/assets/images/users-empty.png";
 import { useGetAdmins } from "@/hooks/admin/get-admin";
 
+// Interfeyslar
 interface IUserResponse {
   data: IUserData[];
   totalCount: number;
@@ -21,20 +22,23 @@ interface IQuery {
   adminId?: string;
 }
 
+// API so'rovi
 const getReferalUsers = async (query: IQuery): Promise<IUserResponse> => {
   const res = await request.get<IUserResponse>("/auth/referals", {
-    params: query.adminId ? { adminId: query.adminId } : {},
+    params: query.adminId ? { adminId: query.adminId } : {}, // adminId bo'lsa, uni qo'shamiz, aks holda bo'sh params
   });
   return res.data;
 };
 
+// Hook
 export const useGetReferalUsers = (query: IQuery) => {
   return useQuery<IUserResponse, AxiosError>({
-    queryKey: ["referals", query.adminId || "no-admin"],
+    queryKey: ["referals", query.adminId || "no-admin"], // adminId bo'lmasa, unique key uchun "no-admin" ishlatamiz
     queryFn: () => getReferalUsers(query),
   });
 };
-        
+
+// Forma ma'lumotlari uchun interfeys
 interface FormData {
   adminId?: string;
 }
@@ -74,7 +78,7 @@ const ReferalUsers = () => {
 
   if (error) {
     return (
-      <div className="min-h-[300px] flex flex-col items-center justify-center bg-white rounded-2xl shadow-md p-10 text-center transform transition-all duration-300">
+      <div className="min-h-[300px] flex flex-col items-center justify-center bg-white rounded-xl shadow-sm p-10 text-center">
         <img src={emptyImage} alt="No users" className="w-32 h-32 mb-6 opacity-80" />
         <h2 className="text-lg font-semibold text-gray-700">Xato yuz berdi</h2>
         <p className="text-sm text-gray-500 mt-2">
@@ -85,101 +89,95 @@ const ReferalUsers = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-          <Share2 className="w-6 h-6 text-blue-600" />
-          Referral Foydalanuvchilar
-        </h1>
-
-        {/* Total Count va Filter qismi */}
-        <div className="mb-8">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-wrap items-center gap-4 bg-white p-6 rounded-2xl shadow-md"
+    <div>
+      <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        <Share2 className="w-6 h-6 text-blue-600" />
+        Referral Foydalanuvchilar
+      </h1>
+      <div className="mb-6 flex justify-start">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-wrap items-center gap-4"
+          >
+            <FormField
+              control={form.control}
+              name="adminId"
+              render={({ field }) => (
+                <FormItem className="w-[220px]">
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
+                      value={field.value || "none"}
+                    >
+                      <SelectTrigger className="bg-gray-50 border-gray-200">
+                        <SelectValue placeholder="Adminni tanlang" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Barcha adminlar</SelectItem>
+                        {admins.map((admin) => (
+                          <SelectItem key={admin.id} value={admin.id as string}>
+                            {admin.fullName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex items-center gap-2">
+              <span className="font-semibold">Jami foydalanuvchilar:</span>
+              <span className="text-lg font-bold">{usersData?.totalCount || 0}</span>
+            </div>
+            <Button
+              type="submit"
+              disabled={!isAtLeastOneFieldFilled}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              <div className="flex items-center gap-4 flex-wrap">
-                <FormField
-                  control={form.control}
-                  name="adminId"
-                  render={({ field }) => (
-                    <FormItem className="w-[220px]">
-                      <FormControl>
-                        <Select
-                          onValueChange={(value) => (value === "none" ? field.onChange("") : field.onChange(value))}
-                          value={field.value || "none"}
-                        >
-                          <SelectTrigger className="bg-gray-50 border-gray-200">
-                            <SelectValue placeholder="Adminni tanlang" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Barcha adminlar</SelectItem>
-                            {admins.map((admin) => (
-                              <SelectItem key={admin.id} value={admin.id as string}>
-                                {admin.fullName}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex items-center gap-2">
-                  <span className="font-semibold">Jami foydalanuvchilar:</span>
-                  <span className="text-lg font-bold">{usersData?.totalCount || 0}</span>
-                </div>
-              </div>
-              <Button
-                type="submit"
-                disabled={!isAtLeastOneFieldFilled}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <ListFilter className="w-4 h-4 mr-2" />
-                Filtrlash
-              </Button>
-            </form>
-          </Form>
-        </div>
-
-        {!usersData?.data || usersData.data.length === 0 ? (
-          <div className="min-h-[300px] flex flex-col items-center justify-center bg-white rounded-2xl shadow-md p-10 text-center transform transition-all duration-300">
-            <img src={emptyImage} alt="No users" className="w-32 h-32 mb-6 opacity-80" />
-            <h2 className="text-lg font-semibold text-gray-700">Foydalanuvchi topilmadi</h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Hozircha {formValues.adminId ? "tanlangan admin orqali" : "hech qanday"} referral foydalanuvchi ro‘yxatdan o‘tmagan.
-            </p>
-          </div>
-        ) : (
-          <Table className="w-full bg-white rounded-2xl shadow-md overflow-hidden">
-            <TableHeader>
-              <TableRow className="bg-gray-50 border-b border-gray-200">
-                <TableHead className="w-[28px] pl-6 text-gray-800 py-5">№</TableHead>
-                <TableHead className="px-2 text-gray-800 py-5">Ism Familya</TableHead>
-                <TableHead className="px-2 text-gray-800 py-5">Email</TableHead>
-                <TableHead className="px-2 text-gray-800 py-5">Account raqami</TableHead>
-                <TableHead className="px-2 text-gray-800 py-5">To'lov muddati</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {usersData.data.map((item, inx) => (
-                <TableRow
-                  key={item.id}
-                  className="hover:bg-gray-50 border-b border-gray-200 transition-all duration-200"
-                >
-                  <TableCell className="pl-6">{inx + 1}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.accountNumber}</TableCell>
-                  <TableCell>{formatedDate(new Date(item.paymentExpire))}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
+              <ListFilter className="mr-2" />
+              Filtrlash
+            </Button>
+          </form>
+        </Form>
       </div>
+
+      {!usersData?.data || usersData.data.length === 0 ? (
+        <div className="min-h-[300px] flex flex-col items-center justify-center bg-white rounded-xl shadow-sm p-10 text-center">
+          <img src={emptyImage} alt="No users" className="w-32 h-32 mb-6 opacity-80" />
+          <h2 className="text-lg font-semibold text-gray-700">Foydalanuvchi topilmadi</h2>
+          <p className="text-sm text-gray-500 mt-2">
+            Hozircha {formValues.adminId ? "tanlangan admin orqali" : "hech qanday"} referral foydalanuvchi ro‘yxatdan o‘tmagan.
+          </p>
+        </div>
+      ) : (
+        <Table className="w-full border-collapse rounded-[15px] overflow-hidden shadow-sm">
+          <TableHeader>
+            <TableRow className="bg-white border-b border-[#E4E6EE] hover:bg-white">
+              <TableHead className="w-[28px] pl-6 text-black py-5">№</TableHead>
+              <TableHead className="px-2 text-black py-5">Ism Familya</TableHead>
+              <TableHead className="px-2 text-black py-5">Email</TableHead>
+              <TableHead className="px-2 text-black py-5">Account raqami</TableHead>
+              <TableHead className="px-2 text-black py-5">To'lov muddati</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {usersData.data.map((item, inx) => (
+              <TableRow
+                key={item.id}
+                className="bg-white hover:bg-[#F5F6FA] border-b border-[#E4E6EE]"
+              >
+                <TableCell className="pl-6">{inx + 1}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item.accountNumber}</TableCell>
+                <TableCell>{formatedDate(new Date(item.paymentExpire))}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
   );
 };
