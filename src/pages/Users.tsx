@@ -2,7 +2,6 @@ import { AxiosError } from "axios";
 import { IUserData } from "@/types";
 import request from "@/services";
 import { useQuery } from "@tanstack/react-query";
-import { UsersIcon } from "@/assets/icons";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import emptyImage from "@/assets/images/users-empty.png";
 
