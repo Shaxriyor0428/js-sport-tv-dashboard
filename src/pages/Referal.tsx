@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { ListFilter, Share2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectTrigger, SelectItem, SelectValue, SelectContent } from "@/components/ui/select";
-import { formatedDate } from "../lib/data-options";
 import emptyImage from "@/assets/images/users-empty.png";
 import { useGetAdmins } from "@/hooks/admin/get-admin";
 
@@ -20,12 +19,13 @@ interface IUserResponse {
 
 interface IQuery {
   adminId?: string;
+  all?: boolean;
 }
 
 // API so'rovi
 const getReferalUsers = async (query: IQuery): Promise<IUserResponse> => {
   const res = await request.get<IUserResponse>("/auth/referals", {
-    params: query.adminId ? { adminId: query.adminId } : {}, // adminId bo'lsa, uni qo'shamiz, aks holda bo'sh params
+    params: query.adminId ? { adminId: query.adminId } :  query.all ? { all: query.all } : {}, // adminId bo'lsa, uni qo'shamiz, aks holda bo'sh params
   });
   return res.data;
 };
