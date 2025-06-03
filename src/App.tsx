@@ -3,7 +3,7 @@ import { router } from "./data/router";
 import MainLayout from "./layouts/MainLayout";
 import useStore from "./context/store";
 import SignIn from "./pages/sign-in/SignIn";
-import Users from "./pages/Users";
+import ReferalUser from "./pages/ReferalUser";
 import Dashboard from "./pages/Dashboard";
 import Payment from "./pages/Payment";
 
@@ -14,10 +14,10 @@ function App() {
     role === "admin"
       ? [
           { href: "/", component: Dashboard },
-          { href: "/users", component: Users },
+          { href: "/referal-users", component: ReferalUser },
           { href: "/payment", component: Payment },
         ]
-      : router.filter((item) => item.href !== "/users");
+      : router.filter((item) => item.href !== "/referal-users");
 
   return (
     <Routes>

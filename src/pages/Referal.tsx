@@ -4,41 +4,36 @@ import request from "@/services";
 import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { ListFilter, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectTrigger, SelectItem, SelectValue, SelectContent } from "@/components/ui/select";
-import { formatedDate } from "../lib/data-options";
 import emptyImage from "@/assets/images/users-empty.png";
 import { useGetAdmins } from "@/hooks/admin/get-admin";
 
-// Interfeyslar
 interface IUserResponse {
   data: IUserData[];
   totalCount: number;
+  totalUsersBelongToAdmin?:number
 }
 
 interface IQuery {
   adminId?: string;
 }
 
-// API so'rovi
 const getReferalUsers = async (query: IQuery): Promise<IUserResponse> => {
   const res = await request.get<IUserResponse>("/auth/referals", {
-    params: query.adminId ? { adminId: query.adminId } : {}, // adminId bo'lsa, uni qo'shamiz, aks holda bo'sh params
+    params: query.adminId ? { adminId: query.adminId } : {},
   });
   return res.data;
 };
 
-// Hook
 export const useGetReferalUsers = (query: IQuery) => {
   return useQuery<IUserResponse, AxiosError>({
-    queryKey: ["referals", query.adminId || "no-admin"], // adminId bo'lmasa, unique key uchun "no-admin" ishlatamiz
+    queryKey: ["referals", query.adminId || "no-admin"],
     queryFn: () => getReferalUsers(query),
   });
 };
 
-// Forma ma'lumotlari uchun interfeys
 interface FormData {
   adminId?: string;
 }
@@ -50,13 +45,6 @@ const ReferalUsers = () => {
     },
   });
   const formValues = useWatch({ control: form.control });
-
-  const isAtLeastOneFieldFilled = Object.values(formValues).some((value) => {
-    if (typeof value === "string") {
-      return value.trim() !== "";
-    }
-    return false;
-  });
 
   const onSubmit = async (data: FormData) => {
     console.log("Filter ma'lumotlari:", data);
@@ -127,18 +115,16 @@ const ReferalUsers = () => {
                 </FormItem>
               )}
             />
-            <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg flex items-center gap-2">
-              <span className="font-semibold">Jami foydalanuvchilar:</span>
-              <span className="text-lg font-bold">{usersData?.totalCount || 0}</span>
+          <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg flex items-center gap-2">
+              <span className="font-medium">Umumiy referallar:</span>
+              <span className="text-base font-bold">{usersData?.totalCount || 0}</span>
             </div>
-            <Button
-              type="submit"
-              disabled={!isAtLeastOneFieldFilled}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <ListFilter className="mr-2" />
-              Filtrlash
-            </Button>
+            {usersData?.totalUsersBelongToAdmin && usersData.totalUsersBelongToAdmin > 0 && (
+              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg flex items-center gap-2">
+                <span className="font-medium">Admin referallari:</span>
+                <span className="text-base font-bold">{usersData.totalUsersBelongToAdmin === usersData.totalCount ? 0 : usersData.totalUsersBelongToAdmin}</span>
+              </div>
+            )}
           </form>
         </Form>
       </div>

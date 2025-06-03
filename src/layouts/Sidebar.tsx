@@ -3,7 +3,7 @@ import logo from "@/assets/images/image.png";
 import { router } from "@/data/router";
 import useStore from "@/context/store";
 import Dashboard from "@/pages/Dashboard";
-import Users from "@/pages/Users";
+import ReferalUser from "@/pages/ReferalUser";
 import { DashboardIcon, UsersIcon } from "@/assets/icons";
 import Payment from "../pages/Payment";
 import { PaymentIcon } from "../assets/icons/PaymentIcon copy";
@@ -18,10 +18,10 @@ const Sidebar = () => {
     role === "admin"
       ? [
           { label: "Bosh sahifa", icon: DashboardIcon, href: "/", component: Dashboard },
-          { label: "Foydalanuvchilar", icon: UsersIcon, href: "/users", component: Users },
+          { label: "Foydalanuvchilar", icon: UsersIcon, href: "/referal-users", component: ReferalUser },
           { label: "To'lovlar", icon: PaymentIcon, href: "/payment", component: Payment },
         ]
-      : router.filter((item) => item.href !== "/users");
+      : router.filter((item) => item.href !== "/referal-users");
 
   return (
     <aside className="w-72 bg-white flex flex-col h-full fixed left-0 top-0 z-[10]">
