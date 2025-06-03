@@ -1,5 +1,5 @@
 import { NavLink, NavLinkRenderProps, useLocation, useNavigate } from "react-router-dom";
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/image.png";
 import { router } from "@/data/router";
 import useStore from "@/context/store";
 import Dashboard from "@/pages/Dashboard";
@@ -30,7 +30,7 @@ const Sidebar = () => {
           onClick={() => navigate("/")}
           src={logo}
           alt="logo"
-          className="w-12 h-12 object-contain rounded-md cursor-pointer"
+          className="w-12 h-12 object-contain rounded-md cursor-pointer opacity-85"
         />
       </div>
 
