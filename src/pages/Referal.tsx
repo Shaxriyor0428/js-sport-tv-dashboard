@@ -18,11 +18,12 @@ interface IUserResponse {
 
 interface IQuery {
   adminId?: string;
+  all?: boolean;
 }
 
 const getReferalUsers = async (query: IQuery): Promise<IUserResponse> => {
   const res = await request.get<IUserResponse>("/auth/referals", {
-    params: query.adminId ? { adminId: query.adminId } : {},
+    params: query.adminId ? { adminId: query.adminId } : {}, // adminId bo'lsa, uni qo'shamiz, aks holda bo'sh params
   });
   return res.data;
 };

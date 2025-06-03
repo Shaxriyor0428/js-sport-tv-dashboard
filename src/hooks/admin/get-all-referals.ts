@@ -10,6 +10,7 @@ interface IUserResponse {
 
 interface IQuery {
     adminId?: string;
+    all?:boolean;
 }
 
 const getReferalUsers = async (query: IQuery): Promise<IUserResponse> => {
