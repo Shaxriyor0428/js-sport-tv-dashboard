@@ -24,6 +24,8 @@ interface ModalProp {
 const formSchema = z.object({
   homeTeamName: z.string().min(1, "Uy jamoasi nomi majburiy"),
   guestTeamName: z.string().min(1, "Mehmon jamoa nomi majburiy"),
+  guestTeamShortName: z.string().min(1, "Mehmon jamoa qisqa nomi majburiy"),
+  homeTeamShortName: z.string().min(1, "Uy jamoa qisqa nomi majburiy"),
   homeTeamFlag: z.string().min(1, "Uy jamoasi bayrog'i majburiy"),
   guestTeamFlag: z.string().min(1, "Mehmon jamoasi bayrog'i majburiy"),
   startTime: z.date({ required_error: "Boshlanish vaqti majburiy" }),
@@ -50,6 +52,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
       guestTeamName: "",
       homeTeamFlag: "",
       guestTeamFlag: "",
+      homeTeamShortName: "",
+      guestTeamShortName: "",
       startTime: undefined,
       endTime: undefined,
       coverImage: undefined,
@@ -68,6 +72,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
       guestTeamName: "",
       homeTeamFlag: "",
       guestTeamFlag: "",
+      homeTeamShortName: "",
+      guestTeamShortName: "",
       startTime: undefined,
       endTime: undefined,
       coverImage: undefined,
@@ -82,6 +88,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
       reset({
         homeTeamName: element.homeTeamName,
         guestTeamName: element.guestTeamName,
+        homeTeamShortName: element.homeTeamShortName,
+        guestTeamShortName: element.guestTeamShortName,
         homeTeamFlag: element.homeTeamFlag,
         guestTeamFlag: element.guestTeamFlag,
         startTime: new Date(element.startTime),
@@ -98,6 +106,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
         guestTeamName: "",
         homeTeamFlag: "",
         guestTeamFlag: "",
+        homeTeamShortName: "",
+        guestTeamShortName: "",
         startTime: undefined,      
         endTime: undefined,
         coverImage: undefined,
@@ -111,6 +121,8 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     const formData = new FormData();
     formData.append("homeTeamName", data.homeTeamName);
     formData.append("guestTeamName", data.guestTeamName);
+    formData.append("homeTeamShortName", data.homeTeamShortName);
+    formData.append("guestTeamShortName", data.guestTeamShortName);
     formData.append("homeTeamFlag", data.homeTeamFlag);
     formData.append("guestTeamFlag", data.guestTeamFlag);
 
@@ -182,12 +194,12 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     setPreviewImage(null);
   };
 
-  const handleFlagSelect = ( value: string, nameField: "homeTeamName" | "guestTeamName", flagField: "homeTeamFlag" | "guestTeamFlag") => {
-    const [name, flag] = value.split(":");
-    setValue(nameField, name, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
-    setValue(flagField, flag, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
-  };
-
+const handleFlagSelect = ( value: string, nameField: "homeTeamName" | "guestTeamName", flagField: "homeTeamFlag" | "guestTeamFlag", shortNameField: "homeTeamShortName" | "guestTeamShortName" ) => {
+  const [name, flag, shortName] = value.split(":");
+  setValue(nameField, name, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
+  setValue(flagField, flag, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
+  setValue(shortNameField, shortName, { shouldTouch: true, shouldDirty: true, shouldValidate: true });
+};
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -204,62 +216,79 @@ const GameModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 mt-2">
-            <FormField
-              control={control}
-              name="homeTeamName"
-              render={({ }) => (
-                <FormItem>
-                  <FormLabel>Uy jamoasi nomi</FormLabel>
-                  <FormControl>
+          <FormField
+            control={control}
+            name="homeTeamName"
+            render={({}) => (
+              <FormItem>
+                <FormLabel>Uy jamoasi nomi</FormLabel>
+                <FormControl>
                   <Select
-                    value={watch("homeTeamName") && watch("homeTeamFlag") ? `${watch("homeTeamName")}:${watch("homeTeamFlag")}` : ""}
-                    onValueChange={(value) => handleFlagSelect(value, "homeTeamName", "homeTeamFlag")}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Jamoa tanlang" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[103]">
-                        {flags.map((flag) => (
-                          <SelectItem key={flag.id} value={`${flag.name}:${flag.image}`}>
-                            {flag.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="guestTeamName"
-              render={({ }) => (
-                <FormItem>
-                  <FormLabel>Mehmon jamoa nomi</FormLabel>
-                  <FormControl>
-                  <Select
-                        value={watch("guestTeamName") && watch("guestTeamFlag") ? `${watch("guestTeamName")}:${watch("guestTeamFlag")}` : ""}
-                        onValueChange={(value) => handleFlagSelect(value, "guestTeamName", "guestTeamFlag")}
+                    value={
+                      watch("homeTeamName") && watch("homeTeamFlag") && watch("homeTeamShortName")
+                        ? `${watch("homeTeamName")}:${watch("homeTeamFlag")}:${watch("homeTeamShortName")}`
+                        : ""
+                    }
+                    onValueChange={(value) =>
+                      handleFlagSelect(value, "homeTeamName", "homeTeamFlag", "homeTeamShortName")
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Jamoa tanlang" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[103]">
+                      {flags.map((flag) => (
+                        <SelectItem
+                          key={flag.id}
+                          value={`${flag.name}:${flag.image}:${flag.shortName}`}
                         >
+                          {flag.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-                      <SelectTrigger>
-                        <SelectValue placeholder="Jamoa tanlang" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[103]">
-                        {flags.map((flag) => (
-                          <SelectItem key={flag.id} value={`${flag.name}:${flag.image}`}>
-                            {flag.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={control}
+            name="guestTeamName"
+            render={({}) => (
+              <FormItem>
+                <FormLabel>Mehmon jamoa nomi</FormLabel>
+                <FormControl>
+                  <Select
+                    value={
+                      watch("guestTeamName") && watch("guestTeamFlag") && watch("guestTeamShortName")
+                        ? `${watch("guestTeamName")}:${watch("guestTeamFlag")}:${watch("guestTeamShortName")}`
+                        : ""
+                    }
+                    onValueChange={(value) =>
+                      handleFlagSelect(value, "guestTeamName", "guestTeamFlag", "guestTeamShortName")
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Jamoa tanlang" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[103]">
+                      {flags.map((flag) => (
+                        <SelectItem
+                          key={flag.id}
+                          value={`${flag.name}:${flag.image}:${flag.shortName}`}
+                        >
+                          {flag.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
               control={control}

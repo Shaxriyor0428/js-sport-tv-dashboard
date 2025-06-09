@@ -24,13 +24,15 @@ export interface IAdminData {
 export interface IFlagCreateRequest {
     id?: number;
     name: string;
+    shortName: string;
     image: File;
 }
 
 export interface IFlagData {
     id: number;
     name: string;
-    image: string
+    image: string;
+    shortName: string;
 }
 
 export interface IFlagResponse {
@@ -47,6 +49,8 @@ export interface IGameCreateRequest {
     guestTeamName: string;
     homeTeamFlag: string;
     guestTeamFlag: string;
+    homeTeamShortName: string;
+    guestTeamShortName: string;
     startTime: Date;
     endTime: Date;
     coverImage: File
@@ -58,6 +62,8 @@ export interface IGameData {
     guestTeamName: string;
     homeTeamFlag: string;
     guestTeamFlag: string;
+    homeTeamShortName: string;
+    guestTeamShortName: string;
     startTime: Date;
     endTime: Date;
     coverImage: string

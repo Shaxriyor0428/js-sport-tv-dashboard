@@ -24,6 +24,7 @@ const formSchema = z.object({
     "Rasm tanlanishi kerak"
   ),
   name: z.string().min(1, "Flag nomi majburiy"),
+  shortName: z.string().min(1, "Flag qisqa nomi majburiy"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -40,6 +41,7 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     defaultValues: {
       name: "",
       image: undefined,
+      shortName: ""
     },
     mode: "onChange",
   });
@@ -53,6 +55,7 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
     reset({
       name: "",
       image: undefined,
+      shortName: ""
     });
     setImage(null);
     setPreviewImage(null);
@@ -65,6 +68,7 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
         reset({
           name: element.name || "",
           image: element.image || undefined,
+          shortName: element.shortName || "",
         });
         if (typeof element.image === "string") {
           setPreviewImage(`${DOMAIN}/${element.image}`);
@@ -75,6 +79,7 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
         reset({
           name: "",
           image: undefined,
+          shortName: ""
         });
         setImage(null);
         setPreviewImage(null);
@@ -85,6 +90,7 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
   const onSubmit = (data: FormValues) => {
     const formData = new FormData();
     formData.append("name", data.name);
+    formData.append("shortName", data.shortName);
     if (data.image instanceof File) {
       formData.append("flagImage", data.image);
     } else if (typeof data.image === "string") {
@@ -173,7 +179,21 @@ const FlagModal: React.FC<ModalProp> = ({ isOpen, handleOpen, element }) => {
                 <FormItem>
                   <FormLabel>Bayroq nomi</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masalan: Lokomotiv" />
+                    <Input {...field} placeholder="Masalan: Uzbekistan" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="shortName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bayroq qisqa nomi</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Masalan: UZB" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -133,6 +133,7 @@ const Flag = () => {
         <TableHead className="w-[28px] pl-6 text-black py-5">№</TableHead>
         <TableHead className="px-2 text-black py-5">Rasm</TableHead>
         <TableHead className="px-2 text-black py-5">Nomi</TableHead>
+        <TableHead className="px-2 text-black py-5">Qisqa nomi</TableHead>
         <TableHead className="pr-6 text-right text-black py-5">Harakat</TableHead>
 
     </TableRow>
@@ -155,6 +156,7 @@ const Flag = () => {
               </button>
             </TableCell>
             <TableCell>{item.name}</TableCell>
+            <TableCell>{item.shortName}</TableCell>
             <TableCell className="text-right pr-5">
               <DropdownMenu>
                     <DropdownMenuTrigger asChild>
