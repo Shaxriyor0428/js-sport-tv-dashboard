@@ -8,9 +8,11 @@ import ConfirmModal from "../components/modal/ConfirmModal";
 import { useUpdateFree } from "../hooks/free/free.update";
 import { usegetProfile } from "../hooks/admin/get-profile";
 import { useConfirmModal } from "../components/modal/useConfirmMOdal";
+import useStore from "../context/store";
 
 const Dashboard = () => {
   const { data } = usegetProfile();
+  const role = useStore((s) => s.role)
   const [isCopied, setIsCopied] = useState(false);
   const { data: freeData } = useGetFree();
   const { mutate: updateFree } = useUpdateFree();
@@ -68,17 +70,20 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       {/* Button Section */}
+      {
+        role === "superadmin" && 
       <div className="mb-8 flex justify-center">
         <Button
           onClick={() => handleUpdate(freeData?.id as string)}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-all duration-300 h-[44px] flex items-center gap-2"
+          className="bg-gradient-to-r from-blue-600 text-2xl to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-7 px-10 rounded-lg shadow-md transition-all duration-300 flex items-center gap-2"
         >
-          <span>Bepul tomosha qilish</span>
-          <span className="font-bold">
+          <span>Tomosha qilish</span>
+          <span className={`font-semibold ${freeData?.free ? 'text-green-400' : "text-red-400"}`}>
             {freeData?.free ? "Bepul" : "Pullik"}
           </span>
         </Button>
       </div>
+      }
 
       {/* Invite Link Section */}
       <div className="flex items-center justify-center">
