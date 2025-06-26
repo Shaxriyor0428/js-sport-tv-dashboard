@@ -2,32 +2,11 @@ import { Copy, Check } from "lucide-react";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { encrypt } from "@/lib/crypto-js";
-import { useGetFree } from "../hooks/free/free.get";
-import { Button } from "../components/ui/button";
-import ConfirmModal from "../components/modal/ConfirmModal";
-import { useUpdateFree } from "../hooks/free/free.update";
 import { usegetProfile } from "../hooks/admin/get-profile";
-import { useConfirmModal } from "../components/modal/useConfirmMOdal";
-import useStore from "../context/store";
 
 const Dashboard = () => {
   const { data } = usegetProfile();
-  const role = useStore((s) => s.role)
   const [isCopied, setIsCopied] = useState(false);
-  const { data: freeData } = useGetFree();
-  const { mutate: updateFree } = useUpdateFree();
-  const { isOpen: isConfirmOpen, message, openModal, closeModal, onConfirm } = useConfirmModal();
-
-  const handleUpdate = (id: string) => {
-    openModal(
-      `Ishonchingiz komilmi, rostdan ham ${
-        freeData?.free ? "pullik tarifga o'tmoqchimisiz?" : "bepul tarifga o'tmoqchimisiz?"
-      }`,
-      () => {
-        updateFree({ id, free: !freeData?.free });
-      }
-    );
-  };
 
   const handleCopy = () => {
     if (data?.data?.id) {
@@ -68,23 +47,8 @@ const Dashboard = () => {
     : "";
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      {/* Button Section */}
-      {
-        role === "superadmin" && 
-      <div className="mb-8 flex justify-center">
-        <Button
-          onClick={() => handleUpdate(freeData?.id as string)}
-          className="bg-gradient-to-r from-blue-600 text-2xl to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-7 px-10 rounded-lg shadow-md transition-all duration-300 flex items-center gap-2"
-        >
-          <span>Tomosha qilish</span>
-          <span className={`font-semibold ${freeData?.free ? 'text-green-400' : "text-red-400"}`}>
-            {freeData?.free ? "Bepul" : "Pullik"}
-          </span>
-        </Button>
-      </div>
-      }
-
+    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+     
       {/* Invite Link Section */}
       <div className="flex items-center justify-center">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
@@ -116,14 +80,6 @@ const Dashboard = () => {
           </p>
         </div>
       </div>
-
-      {/* Confirm Modal */}
-      <ConfirmModal
-        isOpen={isConfirmOpen}
-        message={message}
-        onConfirm={onConfirm}
-        closeModal={closeModal}
-      />
     </div>
   );
 };
