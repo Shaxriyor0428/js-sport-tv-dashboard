@@ -76,6 +76,7 @@ const Users = () => {
               <TableHead className="w-[28px] pl-6 text-black py-5">№</TableHead>
               <TableHead className="px-2 text-black py-5">Ism Familya</TableHead>
               <TableHead className="px-2 text-black py-5">Email</TableHead>
+              <TableHead className="px-2 text-black py-5">Telefon raqami</TableHead>
               <TableHead className="px-2 text-black py-5">Account raqami</TableHead>
             </TableRow>
           </TableHeader>
@@ -87,7 +88,8 @@ const Users = () => {
               >
                 <TableCell className="pl-6">{inx + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
-                <TableCell>{item.email}</TableCell>
+                <TableCell>{item.email ? item.email : '-'}</TableCell>
+                <TableCell>{item.phone ? item.phone : '-'}</TableCell>
                 <TableCell>{item.accountNumber}</TableCell>
               </TableRow>
             ))}
